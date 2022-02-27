@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +13,7 @@ namespace Encryption
 {
     public partial class Form1 : Form
     {
+        private const string inputValue = "Input...";
         public Form1()
         {
             InitializeComponent();
@@ -108,33 +110,93 @@ namespace Encryption
         public class BitwiseInversion
         {
 
-        }
+        } 
+
+
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            inputTextBox.Text = inputValue;
             comboBox1.Items.Add("Encrypt");
-            comboBox1.ValueMember = "Value";
             comboBox1.Items.Add("Decrypt");
+
+            comboBox2.Items.Add("XOR"); 
+            comboBox2.Items.Add("Caesar"); 
+            comboBox2.Items.Add("BitwiseInversion"); 
+        }
+
+        private IEncryptable ll; 
+       
+
+        private void inputTextBox_Enter(object sender, EventArgs e)
+        {
+            if (inputTextBox.Text != inputValue)
+            {
+                return;
+            }
+
+            inputTextBox.Text = string.Empty;
+        }
+
+        private void inputTextBox_Leave(object sender, EventArgs e)
+        {
+            if(inputTextBox.Text.Length > 0)
+
+            {
+                return;
+            }
+
+            inputTextBox.Text = inputValue;
+        }
+
+        private void loadButton_Click(object sender, EventArgs e)
+        {
+            using (OpenFileDialog dialog = new OpenFileDialog())
+            {
+                dialog.Filter = "text file(*.txt)|*.txt";
+                DialogResult result = dialog.ShowDialog();
+
+                if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(dialog.FileName))
+                {
+                   inputTextBox.Text= File.ReadAllText(dialog.FileName);
+                }
+            }
+        }
+
+        private void outputButton_Click(object sender, EventArgs e)
+        {
+            using (SaveFileDialog dialog = new SaveFileDialog())
+            {
+                dialog.Filter = "text file(*.txt)|*.txt";
+                DialogResult result = dialog.ShowDialog();
+
+                if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(dialog.FileName))
+                {
+                    File.WriteAllText(dialog.FileName, inputTextBox.Text);
+                }
+            }
+        }
+
+        private void encryptDecryptButton_Click(object sender, EventArgs e)
+        {
+            
+            
+
+
+
         }
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-
+            
         }
 
-        private void comboBox1_SelectedIndexChanged_1(object sender, EventArgs e)
+        private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
         {
-
-        }
-
-        private void vScrollBar1_Scroll(object sender, ScrollEventArgs e)
-        {
-
-        }
-
-        private void inputTextBox_TextChanged(object sender, EventArgs e)
-        {
-
+            if (comboBox1.SelectedIndex == 0)
+            {
+                ll = new XOR(); 
+            }
         }
     }
 }
